@@ -1,6 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import AnimeDetails from '../../components/AnimeDetails';
 import { Anime } from '../../types/domain/Anime';
 import { requestBackend } from '../../util/request';
@@ -19,23 +20,28 @@ const AnimeDetailsPage = () => {
   const navigate = useNavigate();
   const { id } = useParams<Params>();
 
+  const getProduct = async() => {
+    try {
+      const config: AxiosRequestConfig = {
+        url: `/animes/${id}`,
+        method: 'get'
+      }
+      const response = await requestBackend(config);
+      const data = response.data;
+      setAnime(data);
+    }
+    catch(e) {
+      console.log('erro');
+      toast.error('Erro ao carregar a página');
+      navigate('/');
+
+
+    }
+  }
 
   useEffect(() => {
     console.log('Inicio do useEffect');
-    const config: AxiosRequestConfig = {
-      url: `/animes/${id}`,
-      method: 'get'
-    }
-    requestBackend(config)
-      .then((response) => {
-        console.log(response);
-        setAnime(response.data);
-        console.log('Fim do useEffect');
-      })
-      .catch((e) => {
-        console.log(e);
-        throw new Response("Not Found", { status: 404 });
-      })
+    getProduct();
   }, [id]);
 
   return (

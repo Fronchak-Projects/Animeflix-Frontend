@@ -6,11 +6,13 @@ import {
   createBrowserRouter,
   Route
 } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
 import ErrorPage from './pages/ErrorPage';
 import Root from './pages/Root';
 import Home from './pages/Home';
 import Animes from './pages/Animes';
 import AnimeDetailsPage from './pages/AnimeDetailsPage';
+import 'react-toastify/dist/ReactToastify.css';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,5 +31,10 @@ const router = createBrowserRouter(
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <RouterProvider router={router} />
+    <ToastContainer
+      theme='dark'
+      position='bottom-right'
+      autoClose={3000}
+    />
   </React.StrictMode>,
 )
