@@ -6,13 +6,23 @@ import {
   createBrowserRouter,
   Route
 } from "react-router-dom";
+import ErrorPage from './pages/ErrorPage';
+import Root from './pages/Root';
+import Home from './pages/Home';
+import Animes from './pages/Animes';
+import AnimeDetailsPage from './pages/AnimeDetailsPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
       path="/"
-      element={ <h1>Testando</h1> }
-    ></Route>
+      element={ <Root /> }
+      errorElement={ <ErrorPage /> }
+    >
+      <Route element={ <Home /> } index />
+      <Route path='animes' element={ <Animes /> } />
+      <Route path="animes/:id" element={ <AnimeDetailsPage /> } />
+    </Route>
   )
 )
 

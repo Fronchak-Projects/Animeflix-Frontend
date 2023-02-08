@@ -46,8 +46,6 @@ export const requestBackend = (config: AxiosRequestConfig) => {
     Authorization: 'Bearer ' + getAuthData().access_token
   } : config.headers;
 
-  console.log('headers', headers);
-
   const newConfig: AxiosRequestConfig = { ...config, headers, baseURL: BASE_URL };
 
   return axios(newConfig);
