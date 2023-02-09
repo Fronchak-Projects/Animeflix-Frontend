@@ -15,7 +15,6 @@ type Params = {
 const AnimeDetailsPage = () => {
 
   const [anime, setAnime] = useState<Anime>();
-  console.log(anime);
 
   const navigate = useNavigate();
   const { id } = useParams<Params>();
@@ -24,7 +23,8 @@ const AnimeDetailsPage = () => {
     try {
       const config: AxiosRequestConfig = {
         url: `/animes/${id}`,
-        method: 'get'
+        method: 'get',
+        withCredentials: true
       }
       const response = await requestBackend(config);
       const data = response.data;
@@ -40,7 +40,6 @@ const AnimeDetailsPage = () => {
   }
 
   useEffect(() => {
-    console.log('Inicio do useEffect');
     getProduct();
   }, [id]);
 

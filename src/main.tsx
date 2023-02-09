@@ -20,6 +20,7 @@ import Auth from './pages/Auth';
 import UserRegisterForm from './components/UserRegisterForm';
 import LoginForm from './components/LoginForm';
 import Logout from './pages/Logout';
+import PrivateRoutes from './pages/PrivateRoutes';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,7 +31,11 @@ const router = createBrowserRouter(
     >
       <Route element={ <Home /> } index />
       <Route path='animes' element={ <Animes /> } />
-      <Route path="animes/:id" element={ <AnimeDetailsPage /> } />
+      <Route
+        element={ <PrivateRoutes roles={['ROLE_ADMIN', 'ROLE_USER', 'ROLE_WORKER']} /> }
+      >
+        <Route path="animes/:id" element={ <AnimeDetailsPage /> } />
+      </Route>
       <Route
       path="admin"
       element={ <AdminRoot /> }

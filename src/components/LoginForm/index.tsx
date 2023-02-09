@@ -27,7 +27,9 @@ const LoginForm = () => {
         .then((response) => {
           saveAuthData(response.data);
           toast.success('Login with success');
-          navigate(from);
+          navigate(from, {
+            replace: true
+          });
         })
         .catch((e) => {
           console.log(e);
