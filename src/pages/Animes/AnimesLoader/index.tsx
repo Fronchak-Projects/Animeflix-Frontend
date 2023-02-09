@@ -1,6 +1,6 @@
 import ContentLoader from 'react-content-loader'
 
-const AnimeLoader = () => (
+const AnimesLoader = () => (
   <ContentLoader
     width={800}
     height={575}
@@ -24,11 +24,11 @@ const AnimeLoader = () => (
   </ContentLoader>
 )
 
-AnimeLoader.metadata = {
+AnimesLoader.metadata = {
   name: 'Hassan Tijani.A',
   github: 'surepeps',
   description: 'Image Grid with Pagination',
   filename: 'ImageGrid',
 }
 
-export default AnimeLoader
+export default AnimesLoader

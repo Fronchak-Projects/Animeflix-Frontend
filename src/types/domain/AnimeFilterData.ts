@@ -1,5 +1,5 @@
 export type AnimeFilterData = {
-  filter: string;
-  categoryId: number;
   pageNumber: number;
+  filter: string;
+  category: number;
 }

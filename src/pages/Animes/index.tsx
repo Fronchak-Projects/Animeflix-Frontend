@@ -3,13 +3,12 @@ import { AxiosRequestConfig } from 'axios';
 import AnimeCard from "../../components/AnimeCard";
 import { getParamsToAnimePageFromRequest, requestAllCategoryNames, requestBackend } from '../../util/request';
 import { SpringPage } from '../../types/vendor/StringPage';
-import AnimeFilter from '../../components/AnimeFilter';
-import { CategoryName } from '../../types/domain/CategoryName';
-import { AnimeFilterData } from '../../types/domain/AnimeFilterData';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Pagination from '../../components/Pagination';
-import AnimeLoader from './AnimeLoader';
+import AnimesLoader from './AnimesLoader';
 import { toast } from 'react-toastify';
+import { AnimeFilterData } from '../../types/domain/AnimeFilterData';
+import AnimeFilter from '../../components/AnimeFilter';
 
 type Anime = {
   id: number,
@@ -24,33 +23,37 @@ const Animes = () => {
 
   const [page, setPage] = useState<SpringPage<Anime>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [animeFilterData, setAnimeFilterData] = useState<AnimeFilterData>({
+    pageNumber: 0,
+    category: 0,
+    filter: ''
+  });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getAnimes = async() => {
-      try {
-        const config: AxiosRequestConfig = {
-          method: 'get',
-          url: '/animes',
-          params: {
-            page: 0,
-            size: 4
-          }
-        };
-        setIsLoading(true);
-        const response = await requestBackend(config);
-        setPage(response.data);
-        setIsLoading(false);
-        console.log(response.data);
-      }
-      catch(e) {
-        setIsLoading(false);
-        toast.error('Erro ao carregar a página');
-        navigate('/');
+  const getAnimes = useCallback(() => {
+    const config: AxiosRequestConfig = {
+      method: 'get',
+      url: '/animes',
+      params: {
+        size: 4,
+        page: animeFilterData.pageNumber,
+        filter: animeFilterData.filter,
+        categoryId: animeFilterData.category
       }
     }
+    setIsLoading(true);
+    requestBackend(config)
+      .then((response) => {
+        setPage(response.data);
+      })
+      .catch((e) => toast.error('Erro na requisição'))
+      .finally(() => setIsLoading(false));
+  }, [animeFilterData]);
+
+
+  useEffect(() => {
     getAnimes();
-  }, []);
+  }, [getAnimes]);
 
   const content = () => {
     return page?.content.map((anime) => {
@@ -64,6 +67,36 @@ const Animes = () => {
     });
   }
 
+  const handlePageChange = (selectPage: number) => {
+    setAnimeFilterData((state) => {
+      return {
+        category: state.category,
+        filter: state.filter,
+        pageNumber: selectPage
+      }
+    });
+  }
+
+  const handleCategoryChange = (category: number) => {
+    setAnimeFilterData((prevState) => {
+      return {
+        category: category,
+        filter: prevState.filter,
+        pageNumber: 0
+      }
+    });
+  }
+
+  const handleFilterTextChange = (filter: string) => {
+    setAnimeFilterData((prevState) => {
+      return {
+        category: prevState.category,
+        filter: filter,
+        pageNumber: 0
+      }
+    });
+  }
+
   return (
     <div className="container-fluid p-0">
       <div className="container py-3">
@@ -71,15 +104,31 @@ const Animes = () => {
           <div className="col-12">
             <h1>Animes</h1>
           </div>
-
+          <div className="col-12">
+            <AnimeFilter
+              onTextFilterChange={handleFilterTextChange}
+              categoryFilter={ animeFilterData.category }
+              textFilter={ animeFilterData.filter }
+              handleClearFilter={() => navigate('/animes')}
+              onCategoryChange={handleCategoryChange}
+            />
+          </div>
           { isLoading ? (
-            <div className="d-flex justify-content-center">
-              <AnimeLoader />
+            <div className="d-flex ">
+              <AnimesLoader />
             </div>
           ) : content() }
         </div>
       </div>
-
+      <div className="col-12 mt-3">
+        { !isLoading && page !== undefined && (
+          <Pagination
+            activePage={page.number}
+            pageCount={page.totalPages}
+            onPageChange={handlePageChange}
+          />
+        ) }
+      </div>
     </div>
   );
 

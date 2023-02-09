@@ -13,6 +13,9 @@ import Home from './pages/Home';
 import Animes from './pages/Animes';
 import AnimeDetailsPage from './pages/AnimeDetailsPage';
 import 'react-toastify/dist/ReactToastify.css';
+import AdminRoot from './pages/AdminRoot';
+import AdminIndex from './pages/AdminIndex';
+import AdminAnimesList from './pages/AdminAnimesList';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +27,13 @@ const router = createBrowserRouter(
       <Route element={ <Home /> } index />
       <Route path='animes' element={ <Animes /> } />
       <Route path="animes/:id" element={ <AnimeDetailsPage /> } />
+      <Route
+      path="admin"
+      element={ <AdminRoot /> }
+      >
+        <Route element={ <AdminIndex /> } index />
+        <Route path="animes" element={ <AdminAnimesList /> } />
+      </Route>
     </Route>
   )
 )

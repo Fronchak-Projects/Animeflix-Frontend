@@ -1,16 +1,31 @@
-import { useSubmit } from "react-router-dom";
-import { AnimeFilterData } from "../../types/domain/AnimeFilterData";
+import { AxiosRequestConfig } from 'axios';
+import { useState, useEffect } from 'react';
 import { CategoryName } from "../../types/domain/CategoryName";
+import { requestBackend } from '../../util/request';
 import './styles.css';
 
 type Props = {
-  categories: CategoryName[];
-  defaultValues: AnimeFilterData;
   handleClearFilter: Function;
+  textFilter: string;
+  categoryFilter: number;
+  onTextFilterChange: (filter: string) => void;
+  onCategoryChange: (category: number) => void;
 }
 
-const AnimeFilter = ({ categories, defaultValues, handleClearFilter }: Props) => {
-  const submit = useSubmit();
+const AnimeFilter = ({ handleClearFilter, textFilter, categoryFilter, onTextFilterChange, onCategoryChange }: Props) => {
+
+  const [categories, setCategories] = useState<CategoryName[]>();
+
+  useEffect(() => {
+    const config: AxiosRequestConfig = {
+      method: 'get',
+      url: '/categories/all'
+    };
+    requestBackend(config)
+      .then((response) => {
+        setCategories(response.data);
+      })
+  }, []);
 
   return (
     <div id="product-filter-container" className="col-12 py-2">
@@ -22,8 +37,8 @@ const AnimeFilter = ({ categories, defaultValues, handleClearFilter }: Props) =>
             id="filter"
             placeholder="Search"
             className="form-control"
-            onChange={(event) => submit(event.currentTarget.form)}
-            defaultValue={ defaultValues.filter }
+            defaultValue={ textFilter }
+            onChange={(event) => onTextFilterChange(event.target.value)}
           ></input>
         </div>
         <div className="col-9 col-md-5">
@@ -31,11 +46,11 @@ const AnimeFilter = ({ categories, defaultValues, handleClearFilter }: Props) =>
             className="form-select"
             id="categoryId"
             name="categoryId"
-            onChange={(event) => submit(event.currentTarget.form)}
-            defaultValue={ defaultValues.categoryId }
+            defaultValue={ categoryFilter }
+            onChange={(event) => onCategoryChange(Number(event.target.value))}
           >
             <option value={0}>Category</option>
-            { categories.map((category) => <option key={category.id} value={category.id}>{ category.name }</option>) }
+            { categories?.map((category) => <option key={category.id} value={category.id}>{ category.name }</option>) }
           </select>
         </div>
         <div className="col-3 col-md-2 col-xl-1">

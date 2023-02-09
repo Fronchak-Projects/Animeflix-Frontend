@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import AnimeDetails from '../../components/AnimeDetails';
 import { Anime } from '../../types/domain/Anime';
 import { requestBackend } from '../../util/request';
-import AnimeLoader from './AnimeLoader';
+import AnimeDetailsLoader from './AnimeDetailsLoader';
 
 
 type Params = {
@@ -53,7 +53,7 @@ const AnimeDetailsPage = () => {
           </button>
         </div>
         <div className="col-12">
-          { anime === undefined ? <AnimeLoader /> : <AnimeDetails anime={ anime } /> }
+          { anime === undefined ? <AnimeDetailsLoader /> : <AnimeDetails anime={ anime } /> }
 
         </div>
         <div className="col-12">
