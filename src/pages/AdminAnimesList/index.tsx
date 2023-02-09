@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Link, LoaderFunctionArgs, redirect, useLoaderData, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AnimeCrudCard from "../../components/AnimeCrudCard";
@@ -21,14 +21,21 @@ const AdminAnimesList = () => {
   const [page, setPage] = useState<SpringPage<Anime>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [animeFilterData, setAnimeFilterData] = useState<AnimeFilterData>({
+    pageNumber: 0,
+    category: 0,
+    filter: ''
+  });
 
-  const getAnimes = (pageNumber: number) => {
+  const getAnimes = useCallback(() => {
     const config: AxiosRequestConfig = {
       method: 'get',
       url: '/animes',
       params: {
-        size: 2,
-        page: pageNumber
+        size: 4,
+        page: animeFilterData.pageNumber,
+        filter: animeFilterData.filter,
+        categoryId: animeFilterData.category
       }
     }
     setIsLoading(true);
@@ -38,11 +45,42 @@ const AdminAnimesList = () => {
       })
       .catch((e) => toast.error('Erro na requisição'))
       .finally(() => setIsLoading(false));
-  }
+  }, [animeFilterData]);
+
 
   useEffect(() => {
-    getAnimes(0);
-  }, []);
+    getAnimes();
+  }, [getAnimes]);
+
+  const handlePageChange = (selectPage: number) => {
+    setAnimeFilterData((state) => {
+      return {
+        category: state.category,
+        filter: state.filter,
+        pageNumber: selectPage
+      }
+    });
+  }
+
+  const handleCategoryChange = (category: number) => {
+    setAnimeFilterData((prevState) => {
+      return {
+        category: category,
+        filter: prevState.filter,
+        pageNumber: 0
+      }
+    });
+  }
+
+  const handleFilterTextChange = (filter: string) => {
+    setAnimeFilterData((prevState) => {
+      return {
+        category: prevState.category,
+        filter: filter,
+        pageNumber: 0
+      }
+    });
+  }
 
   const content = page?.content.map((anime) => (
     <div className="col" key={anime.id}>
@@ -57,7 +95,13 @@ const AdminAnimesList = () => {
           <Link to="create" className="btn btn-primary d-block">ADD</Link>
         </div>
         <div className="col-12 col-md-10 col-lg-11">
-          <AnimeFilter categories={[]} handleClearFilter={() => navigate('/admin/animes')} />
+          <AnimeFilter
+            handleClearFilter={() => navigate('/admin/animes')}
+            categoryFilter={ animeFilterData.category }
+            textFilter={ animeFilterData.filter }
+            onTextFilterChange={ handleFilterTextChange }
+            onCategoryChange={ handleCategoryChange }
+          />
         </div>
       </div>
       { isLoading ? (
@@ -76,7 +120,7 @@ const AdminAnimesList = () => {
           <Pagination
             activePage={page.number}
             pageCount={page.totalPages}
-            onPageChange={getAnimes}
+            onPageChange={handlePageChange}
           />
         ) }
       </div>

@@ -16,6 +16,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import AdminRoot from './pages/AdminRoot';
 import AdminIndex from './pages/AdminIndex';
 import AdminAnimesList from './pages/AdminAnimesList';
+import Auth from './pages/Auth';
+import UserRegisterForm from './components/UserRegisterForm';
+import LoginForm from './components/LoginForm';
+import Logout from './pages/Logout';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,6 +38,23 @@ const router = createBrowserRouter(
         <Route element={ <AdminIndex /> } index />
         <Route path="animes" element={ <AdminAnimesList /> } />
       </Route>
+      <Route
+        path='auth'
+        element={ <Auth /> }
+      >
+        <Route
+          index
+          element={ <UserRegisterForm /> }
+        />
+        <Route
+          path='login'
+          element={ <LoginForm /> }
+        />
+      </Route>
+      <Route
+        path='logout'
+        element={ <Logout /> }
+      />
     </Route>
   )
 )

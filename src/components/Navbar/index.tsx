@@ -1,7 +1,10 @@
 import { NavLink } from 'react-router-dom';
+import { getTokenData, isAuthenticated } from '../../util/auth';
 import './styles.css';
 
 const Navbar = () => {
+
+
 
   return (
     <nav className="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
@@ -18,11 +21,28 @@ const Navbar = () => {
             <li className="nav-item">
               <NavLink className="nav-link" to="animes">Animes</NavLink>
             </li>
-            
+
               <li className="nav-item">
                 <NavLink className="nav-link" to="admin">Admin</NavLink>
               </li>
-            
+          </ul>
+          <ul className="navbar-nav mb-2 mb-lg-0">
+            { isAuthenticated() && (
+              <li className="nav-item">
+                <span className="nav-link text-white">{ getTokenData()?.user_name }</span>
+              </li>
+            ) }
+
+            <li className="nav-item">
+              { isAuthenticated() ? (
+                <>
+                  <NavLink className="nav-link" to="logout">Logout</NavLink>
+                </>
+              ) : (
+                <NavLink className="nav-link" to="auth">Login</NavLink>
+              ) }
+
+            </li>
           </ul>
         </div>
       </div>
