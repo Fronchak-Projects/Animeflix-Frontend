@@ -1,10 +1,13 @@
+import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Form, useSubmit } from 'react-router-dom';
+import { Form, redirect, useNavigate, useSubmit } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import CategoryFormImage from '../../assets/imgs/category-form-image.svg';
 import { Category } from '../../types/domain/Category';
 import { CategoryFormInputs, CategoryFormInputsKeys } from '../../types/domain/CategoryFormInputs';
 import { DefaultDataError } from '../../types/vendor/DefaultDataError';
+import { requestBackend } from '../../util/request';
 import './styles.css';
 
 type Props = {
@@ -15,8 +18,8 @@ type Props = {
 const CategoryForm = ({ defaultValues, serverError }: Props) => {
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<CategoryFormInputs>();
-
   const [wasSubmited, setWasSubmited] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if(defaultValues) {
@@ -34,8 +37,23 @@ const CategoryForm = ({ defaultValues, serverError }: Props) => {
     description: getServerError('description'),
   }
 
-  const onSubmit = (inputs: CategoryFormInputs) => {
-    console.log(inputs);
+  const onSubmit = (data: CategoryFormInputs) => {
+    console.log(data);
+    const config: AxiosRequestConfig = {
+      method: 'post',
+      url: '/categories',
+      data,
+      withCredentials: true
+    }
+    requestBackend(config)
+      .then((response) => {
+        toast.success('Category created');
+        navigate(`/admin/categories/${response.data.id}`);
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error('Error!');
+      })
   }
 
   const getInputClassName = (fieldName: CategoryFormInputsKeys) => {

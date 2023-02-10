@@ -23,6 +23,7 @@ import PrivateRoutes from './pages/PrivateRoutes';
 import { AuthContext, AuthContextData } from './contexts/AuthContext';
 import CreateCategoryPage from './pages/CreateCategoryPage';
 import AdminCategoriesList from './pages/AdminCategoriesList';
+import AdminCategoryDetails from './pages/AdminCategoryDetails';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -49,6 +50,7 @@ const router = createBrowserRouter(
           <Route path="animes" element={ <AdminAnimesList /> } />
           <Route path='categories' element={ <AdminCategoriesList /> } />
           <Route path='categories/create' element={ <CreateCategoryPage /> } />
+          <Route path='categories/:id' element={ <AdminCategoryDetails /> } />
         </Route>
       </Route>
       <Route
