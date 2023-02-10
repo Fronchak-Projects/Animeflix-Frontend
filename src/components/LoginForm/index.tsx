@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ActionFunctionArgs, Form, Link, redirect, useLocation, useNavigate, useSubmit } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../../contexts/AuthContext';
+import { getTokenData } from '../../util/auth';
 import { requestBackendLogin } from '../../util/request';
 import { saveAuthData } from '../../util/storage';
 import './styles.css';
@@ -13,6 +15,8 @@ type FormData = {
 }
 
 const LoginForm = () => {
+
+  const { setAuthContextData } = useContext(AuthContext);
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const [ wasSubmited, setWasSubmited ] = useState(false);
   const navigate = useNavigate();
@@ -26,6 +30,10 @@ const LoginForm = () => {
      requestBackendLogin(formData)
         .then((response) => {
           saveAuthData(response.data);
+          setAuthContextData({
+            authenticated: true,
+            tokenData: getTokenData()
+          });
           toast.success('Login with success');
           navigate(from, {
             replace: true
