@@ -5,14 +5,16 @@ import { requestBackend } from '../../util/request';
 import './styles.css';
 
 type Props = {
-  handleClearFilter: Function;
   textFilter: string;
   categoryFilter: number;
   onTextFilterChange: (filter: string) => void;
   onCategoryChange: (category: number) => void;
+  onClearFilters: () => void;
 }
 
-const AnimeFilter = ({ handleClearFilter, textFilter, categoryFilter, onTextFilterChange, onCategoryChange }: Props) => {
+const AnimeFilter = ({
+  textFilter, categoryFilter,
+  onTextFilterChange, onCategoryChange, onClearFilters }: Props) => {
 
   const [categories, setCategories] = useState<CategoryName[]>();
 
@@ -37,7 +39,7 @@ const AnimeFilter = ({ handleClearFilter, textFilter, categoryFilter, onTextFilt
             id="filter"
             placeholder="Search"
             className="form-control"
-            defaultValue={ textFilter }
+            value={ textFilter }
             onChange={(event) => onTextFilterChange(event.target.value)}
           ></input>
         </div>
@@ -46,7 +48,7 @@ const AnimeFilter = ({ handleClearFilter, textFilter, categoryFilter, onTextFilt
             className="form-select"
             id="categoryId"
             name="categoryId"
-            defaultValue={ categoryFilter }
+            value={ categoryFilter }
             onChange={(event) => onCategoryChange(Number(event.target.value))}
           >
             <option value={0}>Category</option>
@@ -57,7 +59,7 @@ const AnimeFilter = ({ handleClearFilter, textFilter, categoryFilter, onTextFilt
           <button
             type="button"
             className="btn btn-primary w-100"
-            onClick={() => handleClearFilter()}
+            onClick={() => onClearFilters()}
           >
             Clear
           </button>

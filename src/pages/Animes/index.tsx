@@ -97,6 +97,14 @@ const Animes = () => {
     });
   }
 
+  const handleClearFilters = () => {
+    setAnimeFilterData({
+      category: 0,
+      filter: '',
+      pageNumber: 0
+    });
+  }
+
   return (
     <div className="container-fluid p-0">
       <div className="container py-3">
@@ -109,7 +117,7 @@ const Animes = () => {
               onTextFilterChange={handleFilterTextChange}
               categoryFilter={ animeFilterData.category }
               textFilter={ animeFilterData.filter }
-              handleClearFilter={() => navigate('/animes')}
+              onClearFilters={ handleClearFilters }
               onCategoryChange={handleCategoryChange}
             />
           </div>

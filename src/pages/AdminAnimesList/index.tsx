@@ -82,6 +82,14 @@ const AdminAnimesList = () => {
     });
   }
 
+  const handleClearFilters = () => {
+    setAnimeFilterData({
+      category: 0,
+      filter: '',
+      pageNumber: 0
+    });
+  }
+
   const content = page?.content.map((anime) => (
     <div className="col" key={anime.id}>
       <AnimeCrudCard anime={ anime } />
@@ -96,7 +104,7 @@ const AdminAnimesList = () => {
         </div>
         <div className="col-12 col-md-10 col-lg-11">
           <AnimeFilter
-            handleClearFilter={() => navigate('/admin/animes')}
+            onClearFilters={ handleClearFilters }
             categoryFilter={ animeFilterData.category }
             textFilter={ animeFilterData.filter }
             onTextFilterChange={ handleFilterTextChange }

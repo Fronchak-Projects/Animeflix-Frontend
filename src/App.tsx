@@ -21,6 +21,8 @@ import UserRegisterForm from './components/UserRegisterForm';
 import LoginForm from './components/LoginForm';
 import PrivateRoutes from './pages/PrivateRoutes';
 import { AuthContext, AuthContextData } from './contexts/AuthContext';
+import CreateCategoryPage from './pages/CreateCategoryPage';
+import AdminCategoriesList from './pages/AdminCategoriesList';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,6 +47,8 @@ const router = createBrowserRouter(
         >
           <Route element={ <AdminIndex /> } index />
           <Route path="animes" element={ <AdminAnimesList /> } />
+          <Route path='categories' element={ <AdminCategoriesList /> } />
+          <Route path='categories/create' element={ <CreateCategoryPage /> } />
         </Route>
       </Route>
       <Route
@@ -62,13 +66,7 @@ const router = createBrowserRouter(
       </Route>
     </Route>
   )
-)
-
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-
-  </React.StrictMode>,
-)
+);
 
 const App = () => {
 

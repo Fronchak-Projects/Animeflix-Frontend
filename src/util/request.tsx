@@ -52,15 +52,16 @@ export const requestBackend = (config: AxiosRequestConfig) => {
   return axios(newConfig);
 }
 
-export const requestAllCategoryNames = async(): Promise<CategoryName[]> => {
+export const requestAllCategoryNames = (filter: string = '') => {
   const config: AxiosRequestConfig = {
     baseURL: BASE_URL,
     url: '/categories/all',
-    method: 'get'
+    method: 'get',
+    params: {
+      filter
+    }
   }
-  const response = await axios(config);
-  const categories = response.data as CategoryName[];
-  return categories;
+  return axios(config);
 }
 
 export const getParamsToAnimePageFromRequest = (request: Request) => {
