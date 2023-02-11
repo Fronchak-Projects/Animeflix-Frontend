@@ -1,32 +1,30 @@
-import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Form, redirect, useNavigate, useSubmit } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import CategoryFormImage from '../../assets/imgs/category-form-image.svg';
 import { Category } from '../../types/domain/Category';
 import { CategoryFormInputs, CategoryFormInputsKeys } from '../../types/domain/CategoryFormInputs';
-import { DefaultDataError } from '../../types/vendor/DefaultDataError';
-import { requestBackend } from '../../util/request';
+import { InvalidEntityError } from '../../types/domain/InvalidEntityError';
 import './styles.css';
 
 type Props = {
   defaultValues?: Category;
-  serverError?: DefaultDataError;
+  serverError?: InvalidEntityError;
+  handleFormSubmit: (data: CategoryFormInputs) => void;
 }
 
-const CategoryForm = ({ defaultValues, serverError }: Props) => {
+const CategoryForm = ({ defaultValues, serverError, handleFormSubmit }: Props) => {
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<CategoryFormInputs>();
   const [wasSubmited, setWasSubmited] = useState<boolean>(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
+
     if(defaultValues) {
       setValue('name', defaultValues.name);
       setValue('description', defaultValues.description);
     }
   }, []);
+
 
   const getServerError = (fieldName: CategoryFormInputsKeys) => {
     return serverError?.errors?.find((fieldError) => fieldError.fieldName === fieldName)?.message;
@@ -39,21 +37,7 @@ const CategoryForm = ({ defaultValues, serverError }: Props) => {
 
   const onSubmit = (data: CategoryFormInputs) => {
     console.log(data);
-    const config: AxiosRequestConfig = {
-      method: 'post',
-      url: '/categories',
-      data,
-      withCredentials: true
-    }
-    requestBackend(config)
-      .then((response) => {
-        toast.success('Category created');
-        navigate(`/admin/categories/${response.data.id}`);
-      })
-      .catch((e) => {
-        console.log(e);
-        toast.error('Error!');
-      })
+    handleFormSubmit(data);
   }
 
   const getInputClassName = (fieldName: CategoryFormInputsKeys) => {
@@ -66,7 +50,7 @@ const CategoryForm = ({ defaultValues, serverError }: Props) => {
         <div className="col-12 col-md-6 d-none d-md-flex">
           <img src={ CategoryFormImage } alt="Forms" className="img-fluid d-100"></img>
         </div>
-        <form method='post' className="col-12 col-md-6" id="category-form" onSubmit={handleSubmit(onSubmit)}>
+        <form className="col-12 col-md-6" id="category-form" onSubmit={handleSubmit(onSubmit)}>
           <h3 className="mb-3">Category Form</h3>
           <div>
             <div

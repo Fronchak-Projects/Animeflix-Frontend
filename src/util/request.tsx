@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
 import { redirect } from 'react-router-dom';
 import { CategoryName } from '../types/domain/CategoryName';
+import { InvalidEntityError } from '../types/domain/InvalidEntityError';
 import { getAuthData } from "./storage";
 
 export const BASE_URL = 'http://localhost:8080';
@@ -101,3 +102,14 @@ axios.interceptors.response.use(function (response) {
   console.log('Interceptors do erro na resposta');
   return Promise.reject(error);
 });
+
+
+
+export const isInvalidEntityError = (e: any): [boolean, InvalidEntityError | null] => {
+  const status = e?.response?.data?.status;
+  if(status && (status === 422 || status === 404)) {
+    return [true, e.response.data as  InvalidEntityError];
+  }
+
+  return [false, null];
+}

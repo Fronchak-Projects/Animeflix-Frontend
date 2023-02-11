@@ -4,44 +4,49 @@ import { Form, useSubmit } from 'react-router-dom';
 import { Anime } from '../../types/domain/Anime';
 import { AnimeFormInputs, AnimeFormInputsKeys } from '../../types/domain/AnimeFormInputs';
 import { CategoryName } from '../../types/domain/CategoryName';
+import { InvalidEntityError } from '../../types/domain/InvalidEntityError';
 import { DefaultDataError } from '../../types/vendor/DefaultDataError';
 import { requestAllCategoryNames } from '../../util/request';
 
 type Props = {
-  categories: CategoryName[];
-  serverError?: DefaultDataError;
+  serverError?: InvalidEntityError;
   defaultValues?: Anime;
+  handleSubmitForm: (data: AnimeFormInputs) => void;
 }
 
-const AnimeForm = ({ serverError, defaultValues }: Props) => {
+const AnimeForm = ({ serverError, defaultValues, handleSubmitForm }: Props) => {
 
   const [categories, setCategories] = useState<CategoryName[]>([]);
-
-
-
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<AnimeFormInputs>();
 
   const [wasSubmited, setWasSubmited] = useState<boolean>(false);
-  const submit = useSubmit();
 
   useEffect(() => {
+    requestAllCategoryNames()
+      .then((response) => {
+        setCategories(response.data);
+        if(defaultValues) {
+          //setValue('categories', defaultValues.categories.map((category) => category.id));
+        }
+
+      });
+  }, []);
+
+  useEffect(() => {
+
     if(defaultValues) {
 
       setValue('name', defaultValues.name);
-
+      setValue('categories', defaultValues.categories.map((cat) => cat.id));
       setValue('imgUrl', defaultValues.imgUrl);
       setValue('lauchYear', defaultValues.lauchYear);
       setValue('avaliation', defaultValues.avaliation);
       setValue('synopsis', defaultValues.synopsis);
+      console.log(defaultValues.categories);
 
     }
 
-    requestAllCategoryNames()
-      .then((response) => {
-        setCategories(response.data);
-      });
-
-  }, []);
+  }, [defaultValues]);
 
   const getServerError = (fieldName: AnimeFormInputsKeys) => {
     return serverError?.errors?.find((fieldError) => fieldError.fieldName === fieldName)?.message;
@@ -63,9 +68,11 @@ const AnimeForm = ({ serverError, defaultValues }: Props) => {
 
   const onSubmit = (inputs: AnimeFormInputs) => {
     console.log(inputs);
+    handleSubmitForm(inputs);
   }
 
   return (
+
     <form method='post' className="row m-0" onSubmit={handleSubmit(onSubmit)} id="form">
       <div className="col-12 mb-4">
         <h2>Dados no Anime</h2>
@@ -75,7 +82,9 @@ const AnimeForm = ({ serverError, defaultValues }: Props) => {
         className={`alert alert-danger ${serverError ? 'd-block' : 'd-none'}`}
         role="alert"
       >
-        <i className="bi bi-exclamation-triangle-fill me-2"></i>{ serverError?.message }
+        <i className="bi bi-exclamation-triangle-fill me-2"></i>
+        { serverError ? (serverError?.error + " - " + serverError.message ) : '' }
+
       </div>
       </div>
 
@@ -110,7 +119,7 @@ const AnimeForm = ({ serverError, defaultValues }: Props) => {
             className={`form-select ${getInputClassName('categories')}`}
             id="categories"
             name="categories"
-            defaultValue={defaultValues ? defaultValues.categories.map((category) => String(category.id)) : []}
+
             multiple
           >
             { categories.map((category) => <option key={category.id} value={category.id}>{ category.name }</option>) }

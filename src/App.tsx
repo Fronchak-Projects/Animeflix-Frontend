@@ -24,6 +24,10 @@ import { AuthContext, AuthContextData } from './contexts/AuthContext';
 import CreateCategoryPage from './pages/CreateCategoryPage';
 import AdminCategoriesList from './pages/AdminCategoriesList';
 import AdminCategoryDetails from './pages/AdminCategoryDetails';
+import AnimeForm from './components/AnimeForm';
+import EditAnimePage from './pages/EditAnimePage';
+import CreateAnimePage from './pages/CreateAnimePage';
+import EditCategoryPage from './pages/EditCategoryPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,8 +52,11 @@ const router = createBrowserRouter(
         >
           <Route element={ <AdminIndex /> } index />
           <Route path="animes" element={ <AdminAnimesList /> } />
+          <Route path="animes/create" element={ <CreateAnimePage /> } />
+          <Route path="animes/edit/:id" element={ <EditAnimePage /> } />
           <Route path='categories' element={ <AdminCategoriesList /> } />
           <Route path='categories/create' element={ <CreateCategoryPage /> } />
+          <Route path="categories/edit/:id" element={ <EditCategoryPage /> } />
           <Route path='categories/:id' element={ <AdminCategoryDetails /> } />
         </Route>
       </Route>

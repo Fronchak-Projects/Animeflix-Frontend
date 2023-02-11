@@ -1,59 +1,70 @@
-import { AxiosRequestConfig } from 'axios';
-import { useLoaderData, ActionFunctionArgs, redirect, useActionData, LoaderFunctionArgs } from 'react-router-dom';
+import axios, { AxiosRequestConfig } from 'axios';
+import { useEffect, useState } from 'react';
+import { useLoaderData, ActionFunctionArgs, redirect, useActionData, LoaderFunctionArgs, useParams, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import AnimeForm from "../../components/AnimeForm";
 import { Anime } from '../../types/domain/Anime';
+import { AnimeFormInputs } from '../../types/domain/AnimeFormInputs';
 import { CategoryName } from '../../types/domain/CategoryName';
+import { InvalidEntityError } from '../../types/domain/InvalidEntityError';
 import { DefaultDataError } from '../../types/vendor/DefaultDataError';
 import { RequestError } from '../../types/vendor/RequestError';
-import { requestAllCategoryNames, requestBackend } from '../../util/request';
-
-export const action = async({ request, params }: ActionFunctionArgs) => {
-try {
-  const formData = await request.formData();
-  console.log('formData', formData);
-  const categories = formData.getAll('categories');
-  const obj = Object.fromEntries(formData);
-  const data = { ...obj, categories };
-  console.log('data', data);
-  const config: AxiosRequestConfig = {
-    method: 'put',
-    url: `/animes/${params.id}`,
-    data
-  }
-  const response = await requestBackend(config);
-  return redirect(`/animes/${(response.data as Anime).id}`);
-}
-catch(e) {
-  const obj = e as RequestError;
-  return obj.response.data;
-}
-
-}
-
-export const loader = async({ params }: LoaderFunctionArgs) => {
-  const categories = await requestAllCategoryNames();
-  const config: AxiosRequestConfig = {
-    url: `/animes/${params.id}`,
-    method: 'get'
-  }
-  const response = await requestBackend(config);
-  const anime = response.data;
-  return { categories, anime };
-}
-
-type Loader = {
-  categories: CategoryName[]
-  anime: Anime;
-}
+import { isInvalidEntityError, requestAllCategoryNames, requestBackend } from '../../util/request';
 
 const EditAnimePage = () => {
 
-  const { categories, anime } = useLoaderData() as Loader;
-  const actionData = useActionData() as DefaultDataError;
+  const { id } = useParams();
+  const [anime, setAnime] = useState<Anime | null>(null);
+  const [serverError, setServerError] = useState<InvalidEntityError | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const config: AxiosRequestConfig = {
+      method: 'get',
+      url: `/animes/${id}`,
+      withCredentials: true
+    }
+    requestBackend(config)
+      .then((response) => {
+        setAnime(response.data);
+      })
+      .catch((e) => {
+        console.log(e);
+        toast.error('Erro ao buscar informações do anime');
+        navigate(-1);
+      });
+  }, [id]);
+
+  const handleSubmit = (data: AnimeFormInputs) => {
+    const config: AxiosRequestConfig = {
+      method: 'put',
+      url: `/animes/${id}`,
+      withCredentials: true,
+      data
+    }
+    requestBackend(config)
+      .then(() => {
+        toast.success('Anime updated with success');
+        navigate(`/animes/${id}`);
+      })
+      .catch((e) => {
+        toast.error('Error updating anime');
+        const [isInvalidError, error] = isInvalidEntityError(e);
+        if(isInvalidError) {
+          setServerError(error);
+        }
+      })
+  }
 
   return (
     <div className="m-2 p-2">
-      <AnimeForm categories={ categories } serverError={actionData} defaultValues={anime} />
+      { anime === null ? <h1>Loading form ...</h1> : (
+        <AnimeForm
+          defaultValues={anime}
+          handleSubmitForm={ handleSubmit }
+          serverError={ serverError ? serverError : undefined }
+        />
+      ) }
     </div>
   );
 }

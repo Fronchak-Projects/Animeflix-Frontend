@@ -3,6 +3,7 @@ import { useRouteError } from 'react-router-dom';
 const ErrorComponent = () => {
   const error = useRouteError() as any;
   console.log('Other error');
+  console.log(error);
   return (
     <div className="container text-center p-2 p-lg-5">
       <h1 className="mb-4">Oops!</h1>
@@ -12,7 +13,7 @@ const ErrorComponent = () => {
       </p>
     </div>
   );
-  
+
 }
 
 export default ErrorComponent;
