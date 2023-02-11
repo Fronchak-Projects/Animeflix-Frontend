@@ -81,11 +81,11 @@ export const getParamsToAnimePageFromRequest = (request: Request) => {
 // Add a request interceptor
 axios.interceptors.request.use(function (config) {
   // Do something before request is sent
-  console.log('Interceptors antes da requisição');
+  //console.log('Interceptors antes da requisição');
   return config;
 }, function (error) {
   // Do something with request error
-  console.log('Interceptors erro na requisição');
+  //console.log('Interceptors erro na requisição');
   return Promise.reject(error);
 });
 
@@ -93,13 +93,13 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response) {
   // Any status code that lie within the range of 2xx cause this function to trigger
   // Do something with response data
-  console.log('Interceptors da resposta com sucesso');
+  //console.log('Interceptors da resposta com sucesso');
   return response;
 }, function (error) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
 
-  console.log('Interceptors do erro na resposta');
+  //console.log('Interceptors do erro na resposta');
   return Promise.reject(error);
 });
 

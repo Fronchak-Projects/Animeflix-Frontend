@@ -22,6 +22,7 @@ const AnimeForm = ({ serverError, defaultValues, handleSubmitForm }: Props) => {
   const [wasSubmited, setWasSubmited] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('UseEffect que carrega as categorias');
     requestAllCategoryNames()
       .then((response) => {
         setCategories(response.data);
@@ -33,20 +34,20 @@ const AnimeForm = ({ serverError, defaultValues, handleSubmitForm }: Props) => {
   }, []);
 
   useEffect(() => {
-
+    console.log('UseEffect dos valores padrões');
     if(defaultValues) {
-
+      console.log('Inside defaultValues');
       setValue('name', defaultValues.name);
-      setValue('categories', defaultValues.categories.map((cat) => cat.id));
+      //setValue('categories', defaultValues.categories.map((cat) => cat.id));
       setValue('imgUrl', defaultValues.imgUrl);
       setValue('lauchYear', defaultValues.lauchYear);
       setValue('avaliation', defaultValues.avaliation);
       setValue('synopsis', defaultValues.synopsis);
-      console.log(defaultValues.categories);
+      //console.log(defaultValues.categories);
 
     }
 
-  }, [defaultValues]);
+  }, [defaultValues, categories]);
 
   const getServerError = (fieldName: AnimeFormInputsKeys) => {
     return serverError?.errors?.find((fieldError) => fieldError.fieldName === fieldName)?.message;
@@ -122,7 +123,13 @@ const AnimeForm = ({ serverError, defaultValues, handleSubmitForm }: Props) => {
 
             multiple
           >
-            { categories.map((category) => <option key={category.id} value={category.id}>{ category.name }</option>) }
+            { categories.map((category) => (
+              <option
+                key={category.id}
+                value={category.id}
+                selected={ defaultValues?.categories.find((cat) => cat.id === category.id) ? true : false }
+              >{ category.name }</option>)
+            ) }
           </select>
           <div className="invalid-feedback d-block">
             { errors.categories?.message }
