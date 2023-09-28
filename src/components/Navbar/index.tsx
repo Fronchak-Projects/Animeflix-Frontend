@@ -16,6 +16,8 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
+  const isAdmin = authContextData.tokenData?.authorities.some((role) => role == 'ROLE_ADMIN' || role == 'ROLE_WORKER');
+
   useEffect(() => {
     if(isAuthenticated()) {
       setAuthContextData({
@@ -56,10 +58,11 @@ const Navbar = () => {
             <li className="nav-item">
               <NavLink className="nav-link" to="animes">Animes</NavLink>
             </li>
-
+            { isAdmin && (
               <li className="nav-item">
                 <NavLink className="nav-link" to="admin">Admin</NavLink>
               </li>
+            ) }
           </ul>
           <ul className="navbar-nav mb-2 mb-lg-0">
             { authContextData.authenticated && (
