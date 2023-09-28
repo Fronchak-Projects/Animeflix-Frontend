@@ -56,7 +56,6 @@ const UserRegisterForm = () => {
     <div className="col-12" id="user-register-form-container">
       <h1 className="mb-4">Create Account</h1>
       <h1 className="mb-4">{ getTokenData()?.user_name }</h1>
-      <h1>{ isAuthenticated() ? 'Authenticated' : 'Not Authenticated' }</h1>
 
       <Form method="post" id="user-register-form" onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-3">
@@ -94,6 +93,7 @@ const UserRegisterForm = () => {
             id="password"
             name="password"
             className={`form-control ${getInputClassName("password")}`}
+            placeholder="Password"
           ></input>
           <div className="invalid-feedback d-block">
             { errors.password?.message }
@@ -113,6 +113,7 @@ const UserRegisterForm = () => {
             id="confirmPassword"
             name="confirmPassword"
             className={`form-control ${ getInputClassName("confirmPassword") }`}
+            placeholder="Confirm your password"
           ></input>
 
           <div className="invalid-feedback d-block">

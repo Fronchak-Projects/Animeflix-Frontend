@@ -70,17 +70,22 @@ const Navbar = () => {
                 <span className="nav-link text-white">{ authContextData?.tokenData?.user_name }</span>
               </li>
             ) }
-
-            <li className="nav-item">
-              { authContextData.authenticated ? (
-                <>
+            { authContextData.authenticated ? (
+              <>
+                <li className="nav-item">
                   <NavLink className="nav-link" to="logout" onClick={handleLogoutClick}>Logout</NavLink>
-                </>
-              ) : (
+                </li>
+              </>
+            ) : (
+              <>
+              <li className="nav-item">
+                <NavLink className="nav-link" to="auth">Register</NavLink>
+              </li>
+              <li className="nav-item">
                 <NavLink className="nav-link" to="auth/login">Login</NavLink>
-              ) }
-
-            </li>
+              </li>
+              </>
+            ) }
           </ul>
         </div>
       </div>
