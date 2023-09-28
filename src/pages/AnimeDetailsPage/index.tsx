@@ -55,9 +55,6 @@ const AnimeDetailsPage = () => {
           { anime === undefined ? <AnimeDetailsLoader /> : <AnimeDetails anime={ anime } /> }
 
         </div>
-        <div className="col-12">
-          RODAPÉ
-        </div>
       </div>
     </div>
   );

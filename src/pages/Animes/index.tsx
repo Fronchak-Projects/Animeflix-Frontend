@@ -35,7 +35,7 @@ const Animes = () => {
       method: 'get',
       url: '/animes',
       params: {
-        size: 4,
+        size: 8,
         page: animeFilterData.pageNumber,
         filter: animeFilterData.filter,
         categoryId: animeFilterData.category
@@ -59,7 +59,7 @@ const Animes = () => {
     return page?.content.map((anime) => {
       return (
         <Link to={anime.id + ''} className="col-12 col-sm-6 col-md-4 col-lg-3 mt-3" key={anime.id}>
-          <div>
+          <div className="h-100">
             <AnimeCard anime={anime} />
           </div>
         </Link>
