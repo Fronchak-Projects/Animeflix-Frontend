@@ -8,19 +8,13 @@ import Pagination from "../../components/Pagination";
 import CardsLoader from "../../loaders/CardsLoader";
 import { Anime } from "../../types/domain/Anime";
 import { AnimeFilterData } from "../../types/domain/AnimeFilterData";
-import { CategoryName } from "../../types/domain/CategoryName";
 import { SpringPage } from "../../types/vendor/StringPage";
 import { requestBackend } from "../../util/request";
-import AnimesLoader from '../Animes/AnimesLoader';
-
-
-
 
 const AdminAnimesList = () => {
 
   const [page, setPage] = useState<SpringPage<Anime>>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigate = useNavigate();
   const [animeFilterData, setAnimeFilterData] = useState<AnimeFilterData>({
     pageNumber: 0,
     category: 0,
@@ -32,7 +26,7 @@ const AdminAnimesList = () => {
       method: 'get',
       url: '/animes',
       params: {
-        size: 4,
+        size: 6,
         page: animeFilterData.pageNumber,
         filter: animeFilterData.filter,
         categoryId: animeFilterData.category

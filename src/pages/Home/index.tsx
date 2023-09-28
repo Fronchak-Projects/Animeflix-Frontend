@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <div className='text-center' id="home-container">
       <img src={ HomeBanner } alt="Home banner" className="img-fluid mb-4 w-100" />
-      <p><Link to={"animes"}>Click here</Link> to see the best animes</p>
+      <Link className='btn btn-primary mb-4 fw-bold fs-4' to={"animes"}>Click here to see the best animes</Link>
     </div>
   );
 }
